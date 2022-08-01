@@ -20,8 +20,6 @@ func Execute(command string, vars []string, logger *logrus.Entry, stop chan int,
 	execChan := make(chan execStruct)
 	logger.Info(fmt.Sprintf("Begin to execute command: %s %s", command, vars))
 	cmd := exec.Command(command, vars...)
-	// terraform init do not need to use secrets
-
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, *secrets...)
 

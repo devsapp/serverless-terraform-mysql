@@ -6,19 +6,19 @@ Provider:
 Description: 一键创建MySQL资源并简单使用
 HomePage: https://github.com/devsapp/serverless-terraform-mysql
 Tags:
-  - serverless terraform 创建 MySQL 资源
-  - 函数计算 OSS 触发器
+  - Serverless Terraform 创建 MySQL 资源
+  - Serverless Terraform 消费 MySQL 资源
 Category: 其它
 Service:
   函数计算:
     Authorities:
       - AliyunFCFullAccess
-#  OSS:
-#    Authorities:
-#      - AliyunOSSFullAccess
-#  RDS:
-#    Authorities:
-#      - AliyunRDSFullAccess
+  OSS:
+    Authorities:
+      - AliyunOSSFullAccess
+  RDS:
+    Authorities:
+      - AliyunRDSFullAccess
 Parameters:
   type: object
   additionalProperties: false # 不允许增加其他属性
@@ -29,11 +29,12 @@ Parameters:
     - acrRegistry
     - bucketName
     - ossPrefix
-    - databasesConfig
+    - databaseName
+    - databaseCharacterSet
     - instanceName
     - accountName
-    - password
     - instanceType
+    - password
   properties:
     region:
       title: 地域
@@ -98,11 +99,16 @@ Parameters:
       type: string
       default: serverless-terraform-mysql
       description: 建议设置精准的前缀，同一个 Bucket 下的不同触发器条件不能重叠包含
-    databasesConfig:
-      title: 数据库配置
-      type: list
-      default: '[{"name": "db1","character_set": "utf8","description": "test" }]'
-      description: 数据库配置，可以创建多个数据库
+    databaseName:
+      title: 数据库名
+      type: string
+      default: db-test
+      description: 数据库名
+    databaseCharacterSet:
+      title: 数据库字符集
+      type: string
+      default: utf8
+      description: 数据库字符集
     instanceName:
       title: RDS 实例名
       type: string

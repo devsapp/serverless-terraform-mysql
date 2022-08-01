@@ -38,44 +38,41 @@ services:
       pre-deploy:
         - component: fc build --use-docker --dockerfile ./serverless-terraform-rds/dockerfile
     props:
-      region:  ${vars.region} #{{ resource_creator_region }}
+      region:  ${vars.region}
       service: ${vars.service}
       function:
-        name:  ${vars.service.name}_creator #{{ creator_function_name }}
+        name:  ${vars.service.name}_creator
         description: "create mysql resource"
         runtime: custom-container
         customContainerConfig:
           image:  "{{ acrRegistry }}"
         memorySize: 1024
         timeout: 1800
-  mysqlUser:
+  mysqlConsumer:
     component: fc
     actions:
       pre-deploy:
         - plugin: ${path(./plugin)}
           args:
-            service_name: ${vars.service.name} #{{ creator_service_name }}
-            function_region: ${vars.region} #{{ resource_creator_region }} 函数所在位置
-            function_name: ${vars.service.name}_creator #{{ creator_function_name }}
+            service_name: ${vars.service.name}
+            function_region: ${vars.region}
+            function_name: ${vars.service.name}_creator
             # oss 配置
             oss_bucket: "{{ ossBucket }}"
             oss_prefix: "{{ ossPrefix }}"
             # 资源限定参数，不同的资源所需不同
-            databases: "{{ databasesConfig }}" #[{"name": "db1","character_set": "utf8","description": "test" }]
+            databaseName: "{{ databaseName }}"
+            databaseCharacterSet: "{{ databaseCharacterSet }}"
             instance_name: "{{ instanceName }}"
             account_name: "{{ accountName }}"
             password: "{{ password }}"
             instance_type: "{{ instanceType }}"
-        #            allocate_public_connection: true
-        #            security_ips: ["0.0.0.0/0"]
-        #            privilege: ReadWrite
-        #            invoke_type: 0
         - component: fc build --use-docker
     props:
-      region: ${vars.region} #{{ resource_region }}
+      region: ${vars.region}
       service: ${vars.service}
       function:
-        name: ${vars.service.name}_consumer #{{ consumer_function_name }}
+        name: ${vars.service.name}_consumer
         description: "consume mysql resource"
         runtime: python3.9
         codeUri: ./code

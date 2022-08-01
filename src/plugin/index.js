@@ -25,7 +25,7 @@ module.exports = async function index(inputs, args = {}) {
     // invoke_type：0为创建资源，1为删除资源，此处只需要创建。
     invoke_type: 0,
     variables: {
-      databases: args.databases,
+      databases: [{name: args.databaseName, character_set: args.databaseCharacterSet, description: "test"}],
       region: inputs.props.region,
       instance_name: args.instance_name,
       account_name: args.account_name,
@@ -97,7 +97,6 @@ module.exports = async function index(inputs, args = {}) {
       },
     },
   });
-  console.error(inputs)
 
   return inputs;
 };

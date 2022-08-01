@@ -68,6 +68,11 @@
 3. 消费者函数则会访问创建的 MySQL 数据库，并执行简单的操作。
 
 ## 使用方法
+### 通过 应用中心创建
+
+
+
+### 通过 Serverless Devs 创建
 使用`s init serverless-terraform-mysql-usage` 并根据提示完成创建
 部署完成后，执行 `s invoke --function-name ${vars.service}_consumer`，即可看到结果：
 ![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/g51eDltdEiz2zZCktfED)
@@ -75,21 +80,43 @@
 其中，每执行一次，都会向users表中，插入一条name 为 zhangsanfeng, address 为 central block 的数据。
 
 ## 自定义
-如需修改自定义能力，首先可以查看 serverless-terraform-rds/data 下的 rds 文件夹以及 data.tf 文件，这两个部分使用了 terraform module 原生能力。 用户可以通过修改 rds下文件 和 data.tf 文件（主要对所需要的 variables 进行设计和更新，再在s.yaml 中 plugin args 部分添加相应 variables 参数即可）。
+如需修改自定义能力，首先可以查看 Serverless-Terraform-RDS/data 下的 rds 文件夹以及 data.tf 文件，这两个部分使用了 terraform module 能力。 用户可以通过修改 rds 下文件 和 data.tf 文件（主要对所需要的 variables 进行设计和更新，再在s.yaml 中 plugin args 部分添加相应 variables 参数即可）。
 
 ## 注意
-由于由于创建 rds 资源耗时较长及一些配置问题，有小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志，从而处理已创建的资源。
+由于由于创建 RDS 资源耗时较长及一些配置问题，很小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志，并查看 RDS 创建情况，从而处理已创建的资源。  
+- 函数日志，查看相对应资源创建函数的函数日志，通过日志中的appy_start字段判断哪些资源已经开始创建，统过日志中的 
+ apply_complete 字段判断哪些字段已经创建完成。
+- [用户 RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 查看是否已经创建实例。
 
 ### 应用执行价格
-由于该应用会真实创建出 rds 资源，并且 rds 会根据存在时长而扣费，所以建议用户对 rds 资源扣费情况进行初步了解后再运行该应用。[rds mysql 资源价格](https://help.aliyun.com/document_detail/45020.html)
+由于该应用会真实创建出 RDS 资源，并且 RDS 会根据存在时长而扣费，所以建议用户对 RDS 资源扣费情况进行初步了解后再运行该应用。[RDS MySQL 资源价格](https://help.aliyun.com/document_detail/45020.html)
 
-函数计算计费： 最长：使用内存（1gb） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价） = 0.026544元。具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
+函数计算计费： 最长：使用内存（1 GB） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价 元 / s） = 0.026544元。具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
+
+# 删除资源
+1. 手动删除  
+    a. 删除 RDS 资源  
+打开 [Rds 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/By31t8afhw1FhqgrhFhv)    
+点击更多  
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/Da9AEDZ4lCEAAr9EkiB7)  
+选择释放实例，弹出提示窗口:  
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/qv8GSFfA2Gsbd9hFBzwl)  
+选择确定，即可释放 RDS 实例。    
+VPC 资源由于和函数计算服务想绑定，所以在删除函数时会自动删除 VPC
+
+    b. 删除函数   
+删除函数前，请确保已经删除了 RDS 实例，否则将不能自动删除 VPC。
+应用中心删除应用，将会自动删除函数以及 VPC。
+2. 一键删除，即将上线，敬请期待
 
 
 
 
 
 
+
+    
 
 </appdetail>
 

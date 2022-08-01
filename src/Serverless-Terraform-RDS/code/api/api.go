@@ -20,7 +20,6 @@ type params struct {
 func Invoke(c *gin.Context, logger *logrus.Entry, stop chan int) {
 
 	jsonData, err := ioutil.ReadAll(c.Request.Body)
-    logger.Info(jsonData)
 	if err != nil {
 		RespondError(c, http.StatusBadRequest, err.Error())
 		return

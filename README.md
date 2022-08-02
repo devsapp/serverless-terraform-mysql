@@ -65,7 +65,7 @@
 
 用户在应用中心创建访问云资源应用时，不用手动创建资源，而是可以使用该应用演示的方式在创建应用之前创建资源，之后再创建应用，这节省了应用中心用户手动创建资源的时间。
 ## 架构详解
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/u229xs979A73c3vafgSA)  
+![](https://img.alicdn.com/imgextra/i3/O1CN018bA3Wz1iU7OqeXFO5_!!6000000004415-2-tps-1500-1564.png)  
 
 
 函数 1：部署资源函数：Serverless Terraform
@@ -104,29 +104,29 @@
 
 ### 通过应用中心创建   
 1. 浏览器搜索框输入 https://fcnext.console.aliyun.com/applications/create?template=serverless-terraform-mysql-usage 并跳转，进入应用创建页面。
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/bqw6tvvtSa7e9AuaFyz1)  
+![](https://img.alicdn.com/imgextra/i1/O1CN01IW8p6O1D8otdMlyjP_!!6000000000172-2-tps-3300-1572.png)  
  根据提示填写应用参数  
 2. 填写参数完毕后，点击最下方的创建，即可开始部署应用
 3. 待应用部署成功后，即可转到 [FC 服务列表](https://fcnext.console.aliyun.com/cn-huhehaote/services)查看刚刚部署的服务
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/S5beksBxvCrCC3qlDBbl)
+![](https://img.alicdn.com/imgextra/i3/O1CN01R7Jk7N29nLekuqAxn_!!6000000008112-2-tps-3528-1446.png)
 4. 点击服务名进入函数列表
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/7t1hDvkF7Zx6vFi47stl)  
+![](https://img.alicdn.com/imgextra/i2/O1CN01uDDLp625bf5IKvscB_!!6000000007545-2-tps-3566-826.png)  
 可以看到有两个函数，以 creator 结尾的是资源创建函数，以 consumer 结尾的是消费函数。
 5.  <span id="日志"></span> 点击进入以 creator 结尾的函数，选择调用日志->函数日志，即可看到资源创建的情况。
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/v6g5vlbq61f3597dr3Cq)  
+![](https://img.alicdn.com/imgextra/i1/O1CN01y08u6729NhTgp4NKy_!!6000000008056-2-tps-3472-1642.png)  
 6. 退出到服务列表，选择以 consumer 结尾的函数，点击函数配置。
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/DvCZAly5egxjiE7f6srl)
+![](https://img.alicdn.com/imgextra/i2/O1CN017sbYpV1Mr5iqKTjAE_!!6000000001487-2-tps-3584-514.png)
 7. 下拉即可看资源函数创建的资源配置写到了消费函数的环境变量内，所以消费者函数可以通过使用环境变量消费资源。
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/DzlbSAb7ciGSl7Sdd2yv)
+![](https://img.alicdn.com/imgextra/i4/O1CN014fhcpa1IeUMODqyEV_!!6000000000918-2-tps-3498-640.png)
 8. 接下来选择测试函数，并点击测试函数
- ![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/gr8zSA6uzzF7xD7kF9kl)
+ ![](https://img.alicdn.com/imgextra/i2/O1CN01WztMgq1DDOr6MyNw2_!!6000000000182-2-tps-3584-1082.png)
 9. 等待片刻即可得到结果
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/kjzqac7lrE9cdgbvwui9)
+![](https://img.alicdn.com/imgextra/i1/O1CN01PN1Hbe1s7oGbbjdKX_!!6000000005720-2-tps-3574-1386.png)
 
 ### 通过 Serverless Devs 创建
 使用`s init serverless-terraform-mysql-usage` 并根据提示完成创建
 部署完成后，执行 `s invoke --function-name ${vars.service}_consumer`，即可看到结果：
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/g51eDltdEiz2zZCktfED)
+![](https://img.alicdn.com/imgextra/i3/O1CN01vcNITp1C0HtoDLW0i_!!6000000000018-2-tps-3442-520.png)
 
 其中，每执行一次，都会向users表中，插入一条name 为 zhangsanfeng, address 为 central block 的数据。
 
@@ -147,11 +147,11 @@
 1. 手动删除  
     a. 删除 RDS 资源  
 打开 [Rds 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/By31t8afhw1FhqgrhFhv)    
+![](https://img.alicdn.com/imgextra/i2/O1CN0173X11z202KSFc556o_!!6000000006791-2-tps-3550-830.png)    
 点击更多  
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/Da9AEDZ4lCEAAr9EkiB7)  
+![](https://img.alicdn.com/imgextra/i4/O1CN01GvWZ3B1cNoFgkOOM1_!!6000000003589-2-tps-3146-612.png)  
 选择释放实例，弹出提示窗口:  
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/qv8GSFfA2Gsbd9hFBzwl)  
+![](https://img.alicdn.com/imgextra/i2/O1CN01xNHWiD1JKAOqW6eOi_!!6000000001009-2-tps-1088-372.png)  
 选择确定，即可释放 RDS 实例。    
 VPC 资源由于和函数计算服务绑定，所以在删除函数时会自动删除 VPC  
     b. 删除函数   

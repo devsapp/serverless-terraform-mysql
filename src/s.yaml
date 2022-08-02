@@ -36,7 +36,7 @@ services:
     component: fc
     actions:
       pre-deploy:
-        - component: fc build --use-docker --dockerfile ./serverless-terraform-rds/dockerfile
+        - component: fc build --use-docker --dockerfile ./serverless-terraform-rds/Dockerfile
     props:
       region:  ${vars.region}
       service: ${vars.service}
@@ -46,6 +46,7 @@ services:
         runtime: custom-container
         customContainerConfig:
           image:  "{{ acrRegistry }}"
+#          image:  registry.cn-huhehaote.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator:0.0.1
         memorySize: 1024
         timeout: 1800
   mysqlConsumer:

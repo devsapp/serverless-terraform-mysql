@@ -1,2 +1,0 @@
-src/serverless-terraform-rds/bin/terraform filter=lfs diff=lfs merge=lfs -text
-src/serverless-terraform-rds/bin/.terraform.d/plugins/registry.terraform.io/hashicorp/alicloud/1.140.0/linux_amd64/terraform-provider-alicloud_v1.140.0 filter=lfs diff=lfs merge=lfs -text

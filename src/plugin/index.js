@@ -46,6 +46,7 @@ module.exports = async function index(inputs, args = {}) {
     endpoint: `${inputs.credentials.AccountID}.${args.function_region}.fc.aliyuncs.com`,
     accessKeyId: inputs.credentials && inputs.credentials.AccessKeyID,
     accessKeySecret: inputs.credentials && inputs.credentials.AccessKeySecret,
+    securityToken: inputs.credentials && inputs.credentials.SecurityToken,
     readTimeout: 1200000,
   };
 
@@ -67,8 +68,8 @@ module.exports = async function index(inputs, args = {}) {
 
   const Output = JSON.parse(body.toString());
   if (lodash.get(Output, 'status') != 'SUCCESS') {
-    logger.error(`Create resource error, operations: ${Output}`);
-    throw new Error(`Create resource error, operations: ${Output}`);
+    logger.error(`Create resource error, operations: ${JSON.stringify(Output)}`);
+    throw new Error(`Create resource error, operations: ${JSON.stringify(Output)}`);
   }
   const result = lodash.get(Output, 'result');
   const terraformOut = JSON.parse(result);

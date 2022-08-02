@@ -25,7 +25,7 @@
 
 | 服务/业务 | 函数计算 |     
 | --- |  --- |   
-| 权限/策略 | AliyunFCFullAccess |     
+| 权限/策略 | AliyunFCFullAccess</br>AliyunOSSFullAccess</br>AliyunRDSFullAccess</br>AliyunContainerRegistryFullAccess</br>AliyunECSFullAccess |     
 
 
 </table>
@@ -57,20 +57,71 @@
 <appdetail id="flushContent">
 
 # 应用详情
+
 ## 应用功能
-本项目为提供 serverless-terraform 一键部署 MySQL 云数据库，并使用该 MySQL 的案例。
+本项目为演示应用中心可以通过使用 Serverless Terraform 函数一键部署 MySQL 云数据库，并使用该 MySQL 的案例。
+
+## 目的
+
+用户在应用中心创建访问云资源应用时，不用手动创建资源，而是可以使用该应用演示的方式在创建应用之前创建资源，之后再创建应用，这节省了应用中心用户手动创建资源的时间。
+## 架构详解
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/u229xs979A73c3vafgSA)  
+
+
+函数 1：部署资源函数：Serverless Terraform
+- Serverless Terraform 将 Terraform 集成在 FC Custom Container 函数中。  
+- 用户向函数输入 TF 资源文件以及资源配置参数即可创建出对应资源，（创建过程由内置 Terraform 执行）  
+- Serverless Terraform 将会把资源创建后的配置信息返回  
+- 对于 端到端 MySQL 应用，我们内置了 RDS TF资源文件，用户只需要输入 RDS 配置参数即可创建出对应 RDS 资源  
+
+函数2：部署消费函数
+-   创建资源：
+
+    1. Serverless Devs 工具具备 pre-action 能力，即在部署函数前完成某项工作。
+
+    2. 利用 pre-action 能力在部署应用消费函数前调用资源函数，创建出资源，并将资源配置返回，传入到应用消费函数的环境变量里。
+- 消费函数是用户的业务逻辑代码。
+
+  1. 对于端到端 MySQL 创建与应用演示来说，消费函数通过从环境变量中获取 MySQL 资源配置，创建链接，之后使用链接创建一个Users表，执行插入数据，之后查询数据返回结果。
+
 通过 Serverless Devs 开发者工具，您只需要几步，就可以体验 Serverless 架构，带来的降本提效的技术红利。
-## 应用结构
-本应用主要分为三个部分：
-![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/d2jjtDbFFhzCEaCdB1Sh)
-1. 资源创建者函数为 serverless-terraform-rds 函数，该函数可以利用内置 terraform 自动创建 MySQL 资源所需的 VPC, VSWITCH, 安全组, rds 实例, db相关配置。
-2. 插件是 pre-action 插件，该插件将会在部署消费者函数前，invoke 资源创建者函数，并将结果写入到消费者函数的环境变量中。
-3. 消费者函数则会访问创建的 MySQL 数据库，并执行简单的操作。
 
 ## 使用方法
-### 通过 应用中心创建
+### 参数
+| 参数                 | 类型   | 默认值                          | 名称         | 备注                                                                                                                                                                                     |
+| ------------------- | ----- | ------------------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| region              | string | cn-hangzhou                    | 地域         | 创建应用所在的地区，资源也会创在该地域                                                                                                                                                   |
+| serviceName         | string | serverless-terraform-mysql     | 服务名       | 应用所属的函数计算服务                                                                                                                                                                   |
+| roleArn             | string | 无默认，必填                    | RAM角色ARN   | 应用所属的函数计算服务配置的 role, 请提前创建好对应的 role, 授信函数计算服务, 并配置好 AliyunOSSFullAccess, AliyunFCDefaultRolePolicy, AliyunRDSFullAccess policy 和 AliyunECSFullAccess |
+| ossBucket           | string | 必填                            | OSS存储桶名  | OSS存储桶名(注意和函数同地域)                                                                                                                                                            |
+| ossPrefix           | string | serverless-terraform-mysql     | 前缀         | 建议设置精准的前缀，同一个 Bucket 下的不同触发器条件不能重叠包含                                                                                                                         |
+| databaseName        | string | db-test                        | 数据库名     | 数据库名                                                                                                                                                                                 |
+| databaseCharacterSet | string | utf8                           | 数据库字符集 | 数据库字符集                                                                                                                                                                             |
+| instanceName        | string | serverless-terraform-mysql-test | RDS 实例名   | rds 实例                                                                                                                                                                                 |
+| instanceType        | string | mysql.n1.micro.1               | 实例规格     | rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu                                                                        |
+| accountName         | string | user                           | RDS 用户名   | RDS 账户                                                                                                                                                                                 |
+| password            | string | 123456                         | RDS 密码     | RDS 密码                                                                                                                                                                                 |
 
-
+### 通过应用中心创建   
+1. 浏览器搜索框输入 https://fcnext.console.aliyun.com/applications/create?template=serverless-terraform-mysql-usage 并跳转，进入应用创建页面。
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/bqw6tvvtSa7e9AuaFyz1)  
+ 根据提示填写应用参数  
+2. 填写参数完毕后，点击最下方的创建，即可开始部署应用
+3. 待应用部署成功后，即可转到 [FC 服务列表](https://fcnext.console.aliyun.com/cn-huhehaote/services)查看刚刚部署的服务
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/S5beksBxvCrCC3qlDBbl)
+4. 点击服务名进入函数列表
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/7t1hDvkF7Zx6vFi47stl)  
+可以看到有两个函数，以 creator 结尾的是资源创建函数，以 consumer 结尾的是消费函数。
+5.  <span id="日志"></span> 点击进入以 creator 结尾的函数，选择调用日志->函数日志，即可看到资源创建的情况。
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/v6g5vlbq61f3597dr3Cq)  
+6. 退出到服务列表，选择以 consumer 结尾的函数，点击函数配置。
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/DvCZAly5egxjiE7f6srl)
+7. 下拉即可看资源函数创建的资源配置写到了消费函数的环境变量内，所以消费者函数可以通过使用环境变量消费资源。
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/DzlbSAb7ciGSl7Sdd2yv)
+8. 接下来选择测试函数，并点击测试函数
+ ![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/gr8zSA6uzzF7xD7kF9kl)
+9. 等待片刻即可得到结果
+![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/kjzqac7lrE9cdgbvwui9)
 
 ### 通过 Serverless Devs 创建
 使用`s init serverless-terraform-mysql-usage` 并根据提示完成创建
@@ -80,18 +131,17 @@
 其中，每执行一次，都会向users表中，插入一条name 为 zhangsanfeng, address 为 central block 的数据。
 
 ## 自定义
-如需修改自定义能力，首先可以查看 Serverless-Terraform-RDS/data 下的 rds 文件夹以及 data.tf 文件，这两个部分使用了 terraform module 能力。 用户可以通过修改 rds 下文件 和 data.tf 文件（主要对所需要的 variables 进行设计和更新，再在s.yaml 中 plugin args 部分添加相应 variables 参数即可）。
+如需修改自定义能力，首先可以查看 serverless-terraform-rds/data 下的 rds 文件夹以及 data.tf 文件，这两个部分使用了 terraform module 能力。 用户可以通过修改 rds 下文件 和 data.tf 文件（主要对所需要的 variables 进行设计和更新，再在s.yaml 中 plugin args 部分添加相应 variables 参数即可）。
 
 ## 注意
-由于由于创建 RDS 资源耗时较长及一些配置问题，很小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志，并查看 RDS 创建情况，从而处理已创建的资源。  
-- 函数日志，查看相对应资源创建函数的函数日志，通过日志中的appy_start字段判断哪些资源已经开始创建，统过日志中的 
- apply_complete 字段判断哪些字段已经创建完成。
-- [用户 RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 查看是否已经创建实例。
+由于创建 RDS 资源耗时较长及一些配置问题，小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志(详见[此处](#日志))，并查看 RDS 创建情况，从而处理已创建的资源。  
+- 在函数日志中查看相对应资源创建函数的函数日志，通过日志中的appy_start字段判断哪些资源已经开始创建，已经创建的日志需要到对应资源处去管理。日志中的 apply_complete 字段判断哪些资源已经创建完成。
+- [用户 RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 查看是否已经创建实例，可以手动删除
 
 ### 应用执行价格
 由于该应用会真实创建出 RDS 资源，并且 RDS 会根据存在时长而扣费，所以建议用户对 RDS 资源扣费情况进行初步了解后再运行该应用。[RDS MySQL 资源价格](https://help.aliyun.com/document_detail/45020.html)
 
-函数计算计费： 最长：使用内存（1 GB） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价 元 / s） = 0.026544元。具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
+函数计算计费： 创建资源最大消费：使用内存（1 GB） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价 元 / s） = 0.026544元（如果处于免费额度时则为免费）具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
 
 # 删除资源
 1. 手动删除  
@@ -103,10 +153,9 @@
 选择释放实例，弹出提示窗口:  
 ![](http://image.editor.devsapp.cn/yxsDtkggiqtE7zdDk2AldGSa8j5CjhsxuDktx1dl8gGdsGqavq/qv8GSFfA2Gsbd9hFBzwl)  
 选择确定，即可释放 RDS 实例。    
-VPC 资源由于和函数计算服务想绑定，所以在删除函数时会自动删除 VPC
-
+VPC 资源由于和函数计算服务绑定，所以在删除函数时会自动删除 VPC  
     b. 删除函数   
-删除函数前，请确保已经删除了 RDS 实例，否则将不能自动删除 VPC。
+注意：删除函数前，请确保已经删除了 RDS 实例，否则将不能自动删除 VPC。
 应用中心删除应用，将会自动删除函数以及 VPC。
 2. 一键删除，即将上线，敬请期待
 
@@ -117,6 +166,8 @@ VPC 资源由于和函数计算服务想绑定，所以在删除函数时会自�
 
 
     
+
+  
 
 </appdetail>
 

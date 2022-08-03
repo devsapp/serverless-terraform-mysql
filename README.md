@@ -94,11 +94,11 @@
 | serviceName         | string | serverless-terraform-mysql     | 服务名      | 应用所属的函数计算服务                                                                                                                                          |
 | roleArn             | string | 无默认，必填                    | RAM角色ARN | 应用所属的函数计算服务配置的 role, 请提前创建好对应的 role, 授信函数计算服务, 并配置好 AliyunOSSFullAccess, AliyunFCDefaultRolePolicy, AliyunRDSFullAccess policy 和 AliyunECSFullAccess |
 | ossBucket           | string | 必填                            | OSS存储桶名  | OSS存储桶名(注意和函数同地域)                                                                                                                                    |
-| ossObjectName           | string | backend-test     | oss 对象名  | oss 对象名                                                                                                                                              |
+| ossObjectName           | string | backend-test     | OSS 对象名  | OSS 对象名                                                                                                                                              |
 | databaseName        | string | db-test                        | 数据库名     | 数据库名                                                                                                                                                 |
 | databaseCharacterSet | string | utf8                           | 数据库字符集   | 数据库字符集                                                                                                                                               |
-| instanceName        | string | serverless-terraform-mysql-test | RDS 实例名  | rds 实例                                                                                                                                               |
-| instanceType        | string | mysql.n1.micro.1               | 实例规格     | rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu                                           |
+| instanceName        | string | serverless-terraform-mysql-test | RDS 实例名  | RDS 实例                                                                                                                                               |
+| instanceType        | string | mysql.n1.micro.1               | 实例规格     | RDS 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu                                           |
 | accountName         | string | user                           | RDS 用户名  | RDS 账户                                                                                                                                               |
 | password            | string | 123456                         | RDS 密码   | RDS 密码                                                                                                                                               |
 
@@ -122,7 +122,7 @@
 ## 删除资源
 1. 手动删除  
    a. 删除 RDS 资源  
-   打开 [Rds 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
+   打开 [RDS 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
    ![](https://img.alicdn.com/imgextra/i2/O1CN0173X11z202KSFc556o_!!6000000006791-2-tps-3550-830.png)    
    点击更多  
    ![](https://img.alicdn.com/imgextra/i4/O1CN01GvWZ3B1cNoFgkOOM1_!!6000000003589-2-tps-3146-612.png)  

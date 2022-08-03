@@ -1,0 +1,128 @@
+Type: Application
+Name: serverless-terraform-mysql-usage
+Provider:
+  - 阿里云
+Version: 0.0.26
+Description: 一键创建MySQL资源并简单使用
+HomePage: https://github.com/devsapp/serverless-terraform-mysql
+Tags:
+  - Terraform
+  - MySQL
+Category: 其它
+Service: # 使用的服务
+  函数计算:
+    Authorities:
+      - AliyunFCFullAccess
+      - AliyunOSSFullAccess
+      - AliyunRDSFullAccess
+      - AliyunContainerRegistryFullAccess
+      - AliyunECSFullAccess
+Parameters:
+  type: object
+  additionalProperties: false # 不允许增加其他属性
+  required: # 必填项
+    - region
+    - serviceName
+    - roleArn
+    - bucketName
+    - ossObjectName
+    - databaseName
+    - databaseCharacterSet
+    - instanceName
+    - accountName
+    - instanceType
+    - password
+  properties:
+    region:
+      title: 地域
+      type: string
+      default: cn-hangzhou
+      description: 创建应用所在的地区
+      enum:
+        - cn-beijing
+        - cn-hangzhou
+        - cn-shanghai
+        - cn-qingdao
+        - cn-zhangjiakou
+        - cn-huhehaote
+        - cn-shenzhen
+        - cn-chengdu
+        - cn-hongkong
+        - ap-southeast-1
+        - ap-southeast-2
+        - ap-southeast-3
+        - ap-southeast-5
+        - ap-northeast-1
+        - eu-central-1
+        - eu-west-1
+        - us-west-1
+        - us-east-1
+        - ap-south-1
+    serviceName:
+      title: 服务名
+      type: string
+      default: serverless-terraform-mysql
+      description: 应用所属的函数计算服务
+    roleArn:
+      title: RAM角色ARN
+      type: string
+      default: ''
+      pattern: '^acs:ram::[0-9]*:role/.*$'
+      description: 应用所属的函数计算服务配置的 role, 请提前创建好对应的 role, 授信函数计算服务, 并配置好 AliyunOSSFullAccess, AliyunFCDefaultRolePolicy, AliyunRDSFullAccess policy 和 AliyunECSFullAccess。
+      required: true
+      x-role:
+        name: fcunzipossrole
+        service: fc
+        authorities:
+          - AliyunOSSFullAccess
+          - AliyunFCDefaultRolePolicy
+          - AliyunRDSFullAccess
+          - AliyunContainerRegistryFullAccess
+          - AliyunECSFullAccess
+    ossBucket:
+      title: OSS存储桶名
+      type: string
+      default: ""
+      description: OSS存储桶名(注意和函数同地域)
+      x-bucket:
+        dependency:
+          - region
+    ossObjectName:
+      title: oss 对象名
+      type: string
+      default: backend-test
+      description: oss 对象名
+    databaseName:
+      title: 数据库名
+      type: string
+      default: db-test
+      description: 数据库名
+    databaseCharacterSet:
+      title: 数据库字符集
+      type: string
+      default: utf8
+      description: 数据库字符集
+    instanceName:
+      title: RDS 实例名
+      type: string
+      default: serverless-terraform-mysql-test
+      description: rds 实例
+    instanceType:
+      title: 实例规格
+      type: string
+      default: mysql.n1.micro.1
+      description: rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu
+    accountName:
+      title: RDS 用户名
+      type: string
+      default: user
+      description: RDS 账户
+    password:
+      title: RDS 密码
+      type: string
+      default: "123456"
+      description: RDS 密码
+
+
+
+

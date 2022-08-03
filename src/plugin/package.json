@@ -26,7 +26,7 @@
     "esbuild": "esbuild src/index.js --bundle --log-level=error --minify --platform=node --format=cjs --target=node10.4 --external:@serverless-devs/core --outfile=dist/index.js"
   },
   "dependencies": {
-    "@alicloud/fc-open20210406": "^1.1.8",
+    "@alicloud/fc2": "^2.6.0",
     "@serverless-devs/core": "^0.1.32",
     "esbuild": "^0.14.51"
   }

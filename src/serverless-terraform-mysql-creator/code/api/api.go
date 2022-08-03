@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
-	"serverless-terraform-rds/code/internal/terraform"
+	"serverless-terraform-mysql-creator/code/internal/terraform"
 	"time"
 
 	"net/http"

@@ -11,15 +11,15 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"serverless-terraform-rds/code/static"
+	"serverless-terraform-mysql-creator/code/static"
 
 	"strings"
 )
 
 type OssConfig struct {
-	OssBucket string `json:"oss_bucket"`
-	OssPrefix string `json:"oss_prefix"`
-	OssRegion string `json:"oss_region"`
+	OssBucket     string `json:"oss_bucket"`
+	OssObjectName string `json:"oss_object_name"`
+	OssRegion     string `json:"oss_region"`
 }
 type Client struct {
 	logger *logrus.Entry
@@ -35,10 +35,10 @@ type Client struct {
 	SecurityToken string
 
 	// from env variables
-	OssPrefix   string
-	OssBucket   string
-	OssRegion   string
-	OssEndpoint string
+	OssObjectName string
+	OssBucket     string
+	OssRegion     string
+	OssEndpoint   string
 }
 
 func NewTerraformClient(variables json.RawMessage, logger *logrus.Entry, invokeType int, stop chan int) *Client {
@@ -55,7 +55,7 @@ func (t *Client) GetOSSAndSecret(c *gin.Context, ossConfig *OssConfig) {
 	t.SecretKey = c.GetHeader("x-fc-access-key-secret")
 	t.SecurityToken = c.GetHeader("x-fc-security-token")
 
-	t.OssPrefix = ossConfig.OssPrefix
+	t.OssObjectName = ossConfig.OssObjectName
 
 	t.OssBucket = ossConfig.OssBucket
 
@@ -82,9 +82,9 @@ func (t *Client) Validate() string {
 		t.logger.Error(errors.New("Can't get oss region"))
 		return "Can't get oss region"
 	}
-	if t.OssPrefix == "" {
-		t.logger.Error(errors.New("Can't get oss prefix"))
-		return "Can't get oss prefix"
+	if t.OssObjectName == "" {
+		t.logger.Error(errors.New("Can't get oss object name"))
+		return "Can't get oss object name"
 	}
 	if t.OssBucket == "" {
 		t.logger.Error(errors.New("Can't get oss bucket"))
@@ -250,6 +250,7 @@ func (t *Client) save() error {
 	if err := os.MkdirAll("data", os.ModePerm); err != nil {
 		t.logger.Error(errors.Wrap(err, "Create directory error"))
 		return errors.Wrap(err, "Create directory error")
+
 	}
 	path, err := filepath.Abs(".")
 	if err != nil {
@@ -312,8 +313,8 @@ func (t Client) createBackend() []byte {
 	ossBlock := barBody.AppendNewBlock("backend", []string{"oss"})
 	ossBody := ossBlock.Body()
 	ossBody.SetAttributeValue("bucket", cty.StringVal(t.OssBucket))
-	ossBody.SetAttributeValue("prefix", cty.StringVal(t.OssPrefix))
-	ossBody.SetAttributeValue("key", cty.StringVal("mysql.tfstate"))
+	ossBody.SetAttributeValue("prefix", cty.StringVal("Serverless-Terraform"))
+	ossBody.SetAttributeValue("key", cty.StringVal(t.OssObjectName))
 	ossBody.SetAttributeValue("region", cty.StringVal(t.OssRegion))
 	ossBody.SetAttributeValue("endpoint", cty.StringVal(t.OssEndpoint))
 	return newFile.Bytes()

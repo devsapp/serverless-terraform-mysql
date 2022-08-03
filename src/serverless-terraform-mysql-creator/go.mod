@@ -1,4 +1,4 @@
-module serverless-terraform-rds
+module serverless-terraform-mysql-creator
 
 go 1.17
 

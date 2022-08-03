@@ -88,20 +88,53 @@
 
 ## 使用方法
 ### 参数
-| 参数                 | 类型   | 默认值                          | 名称         | 备注                                                                                                                                                                                     |
-| ------------------- | ----- | ------------------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| region              | string | cn-hangzhou                    | 地域         | 创建应用所在的地区，资源也会创在该地域                                                                                                                                                   |
-| serviceName         | string | serverless-terraform-mysql     | 服务名       | 应用所属的函数计算服务                                                                                                                                                                   |
-| roleArn             | string | 无默认，必填                    | RAM角色ARN   | 应用所属的函数计算服务配置的 role, 请提前创建好对应的 role, 授信函数计算服务, 并配置好 AliyunOSSFullAccess, AliyunFCDefaultRolePolicy, AliyunRDSFullAccess policy 和 AliyunECSFullAccess |
-| ossBucket           | string | 必填                            | OSS存储桶名  | OSS存储桶名(注意和函数同地域)                                                                                                                                                            |
-| ossPrefix           | string | serverless-terraform-mysql     | 前缀         | 建议设置精准的前缀，同一个 Bucket 下的不同触发器条件不能重叠包含                                                                                                                         |
-| databaseName        | string | db-test                        | 数据库名     | 数据库名                                                                                                                                                                                 |
-| databaseCharacterSet | string | utf8                           | 数据库字符集 | 数据库字符集                                                                                                                                                                             |
-| instanceName        | string | serverless-terraform-mysql-test | RDS 实例名   | rds 实例                                                                                                                                                                                 |
-| instanceType        | string | mysql.n1.micro.1               | 实例规格     | rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu                                                                        |
-| accountName         | string | user                           | RDS 用户名   | RDS 账户                                                                                                                                                                                 |
-| password            | string | 123456                         | RDS 密码     | RDS 密码                                                                                                                                                                                 |
+| 参数                 | 类型   | 默认值                          | 名称       | 备注                                                                                                                                                   |
+| ------------------- | ----- | ------------------------------ |----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| region              | string | cn-hangzhou                    | 地域       | 创建应用所在的地区，资源也会创在该地域                                                                                                                                  |
+| serviceName         | string | serverless-terraform-mysql     | 服务名      | 应用所属的函数计算服务                                                                                                                                          |
+| roleArn             | string | 无默认，必填                    | RAM角色ARN | 应用所属的函数计算服务配置的 role, 请提前创建好对应的 role, 授信函数计算服务, 并配置好 AliyunOSSFullAccess, AliyunFCDefaultRolePolicy, AliyunRDSFullAccess policy 和 AliyunECSFullAccess |
+| ossBucket           | string | 必填                            | OSS存储桶名  | OSS存储桶名(注意和函数同地域)                                                                                                                                    |
+| ossObjectName           | string | backend-test     | oss 对象名  | oss 对象名                                                                                                                                              |
+| databaseName        | string | db-test                        | 数据库名     | 数据库名                                                                                                                                                 |
+| databaseCharacterSet | string | utf8                           | 数据库字符集   | 数据库字符集                                                                                                                                               |
+| instanceName        | string | serverless-terraform-mysql-test | RDS 实例名  | rds 实例                                                                                                                                               |
+| instanceType        | string | mysql.n1.micro.1               | 实例规格     | rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu                                           |
+| accountName         | string | user                           | RDS 用户名  | RDS 账户                                                                                                                                               |
+| password            | string | 123456                         | RDS 密码   | RDS 密码                                                                                                                                               |
 
+
+### 验证
+1. 部署应用成功后，转到 [RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic)，注意选择地域，查看创建出来的资源
+   ![](https://img.alicdn.com/imgextra/i1/O1CN01udRR8j1x10ShUfISS_!!6000000006382-2-tps-3570-1032.png)
+2. invoke 以 consumer 结尾的函数，可以看到结果
+   ![](https://img.alicdn.com/imgextra/i1/O1CN01PN1Hbe1s7oGbbjdKX_!!6000000005720-2-tps-3574-1386.png)
+
+## 注意
+由于创建 RDS 资源耗时较长及一些配置问题，小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志(详见[此处](#日志))，并查看 RDS 创建情况，从而处理已创建的资源。
+- 在函数日志中查看相对应资源创建函数的函数日志，通过日志中的appy_start字段判断哪些资源已经开始创建，已经创建的日志需要到对应资源处去管理。日志中的 apply_complete 字段判断哪些资源已经创建完成。
+- [用户 RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 查看是否已经创建实例，可以手动删除
+
+### 应用执行价格
+由于该应用会真实创建出 RDS 资源，并且 RDS 会根据存在时长而扣费，所以建议用户对 RDS 资源扣费情况进行初步了解后再运行该应用。[RDS MySQL 资源价格](https://help.aliyun.com/document_detail/45020.html)
+
+函数计算计费： 创建资源最大消费：使用内存（1 GB） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价 元 / s） = 0.026544元（如果处于免费额度时则为免费）具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
+
+## 删除资源
+1. 手动删除  
+   a. 删除 RDS 资源  
+   打开 [Rds 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
+   ![](https://img.alicdn.com/imgextra/i2/O1CN0173X11z202KSFc556o_!!6000000006791-2-tps-3550-830.png)    
+   点击更多  
+   ![](https://img.alicdn.com/imgextra/i4/O1CN01GvWZ3B1cNoFgkOOM1_!!6000000003589-2-tps-3146-612.png)  
+   选择释放实例，弹出提示窗口:  
+   ![](https://img.alicdn.com/imgextra/i2/O1CN01xNHWiD1JKAOqW6eOi_!!6000000001009-2-tps-1088-372.png)  
+   选择确定，即可释放 RDS 实例。    
+   VPC 资源由于和函数计算服务绑定，所以在删除函数时会自动删除 VPC  
+   b. 删除函数   
+   注意：删除函数前，请确保已经删除了 RDS 实例，否则将不能自动删除 VPC。
+   应用中心删除应用，将会自动删除函数以及 VPC。
+2. 一键删除，即将上线，敬请期待   
+## 详细步骤 
 ### 通过应用中心创建   
 1. 浏览器搜索框输入 https://fcnext.console.aliyun.com/applications/create?template=serverless-terraform-mysql-usage 并跳转，进入应用创建页面。
 ![](https://img.alicdn.com/imgextra/i1/O1CN01IW8p6O1D8otdMlyjP_!!6000000000172-2-tps-3300-1572.png)  
@@ -133,41 +166,6 @@
 ## 自定义
 如需修改自定义能力，首先可以查看 serverless-terraform-rds/data 下的 rds 文件夹以及 data.tf 文件，这两个部分使用了 terraform module 能力。 用户可以通过修改 rds 下文件 和 data.tf 文件（主要对所需要的 variables 进行设计和更新，再在s.yaml 中 plugin args 部分添加相应 variables 参数即可）。
 
-## 注意
-由于创建 RDS 资源耗时较长及一些配置问题，小概率会出现超时或创建失败的错误，这需要用户自行去控制台函数日志部分查看执行日志(详见[此处](#日志))，并查看 RDS 创建情况，从而处理已创建的资源。  
-- 在函数日志中查看相对应资源创建函数的函数日志，通过日志中的appy_start字段判断哪些资源已经开始创建，已经创建的日志需要到对应资源处去管理。日志中的 apply_complete 字段判断哪些资源已经创建完成。
-- [用户 RDS 实例列表](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 查看是否已经创建实例，可以手动删除
-
-### 应用执行价格
-由于该应用会真实创建出 RDS 资源，并且 RDS 会根据存在时长而扣费，所以建议用户对 RDS 资源扣费情况进行初步了解后再运行该应用。[RDS MySQL 资源价格](https://help.aliyun.com/document_detail/45020.html)
-
-函数计算计费： 创建资源最大消费：使用内存（1 GB） * 使用时长（20 min）= 1 * 20 * 60 * 0.000022120（函数计算单价 元 / s） = 0.026544元（如果处于免费额度时则为免费）具体算法请见：[函数计算价格](https://help.aliyun.com/document_detail/54301.html)
-
-# 删除资源
-1. 手动删除  
-    a. 删除 RDS 资源  
-打开 [Rds 资源管理网站](https://rdsnext.console.aliyun.com/rdsList/cn-huhehaote/basic), 选择创建资源的地域，比如呼和浩特。  
-![](https://img.alicdn.com/imgextra/i2/O1CN0173X11z202KSFc556o_!!6000000006791-2-tps-3550-830.png)    
-点击更多  
-![](https://img.alicdn.com/imgextra/i4/O1CN01GvWZ3B1cNoFgkOOM1_!!6000000003589-2-tps-3146-612.png)  
-选择释放实例，弹出提示窗口:  
-![](https://img.alicdn.com/imgextra/i2/O1CN01xNHWiD1JKAOqW6eOi_!!6000000001009-2-tps-1088-372.png)  
-选择确定，即可释放 RDS 实例。    
-VPC 资源由于和函数计算服务绑定，所以在删除函数时会自动删除 VPC  
-    b. 删除函数   
-注意：删除函数前，请确保已经删除了 RDS 实例，否则将不能自动删除 VPC。
-应用中心删除应用，将会自动删除函数以及 VPC。
-2. 一键删除，即将上线，敬请期待
-
-
-
-
-
-
-
-    
-
-  
 
 </appdetail>
 

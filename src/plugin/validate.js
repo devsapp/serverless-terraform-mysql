@@ -35,9 +35,9 @@ function validate(params) {
     );
   }
 
-  if (lodash.isEmpty(args.oss_prefix)) {
+  if (lodash.isEmpty(args.oss_object_name)) {
     throw new Error(
-        'missing variables.oss_prefix parameter in fc-resource-creator plugin.',
+        'missing variables.oss_object_name parameter in fc-resource-creator plugin.',
     );
   }
 

@@ -1,10 +1,10 @@
 # 修改这里
-VERSION ?= 0.0.1
+VERSION ?= 0.0.2
 # BUILD_TIME is used for daemon BuildTime in go build.
 BUILD_TIME=$(shell date --rfc-3339 s 2> /dev/null | sed -e 's/ /T/')
 
 # 修改这里
-IMG = registry.cn-hangzhou.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator
+IMG = registry.cn-huhehaote.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator
 
 fmt:
 	go fmt ./...

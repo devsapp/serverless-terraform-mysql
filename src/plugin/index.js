@@ -37,7 +37,7 @@ module.exports = async function index(inputs, args = {}) {
     },
     oss_config: {
       oss_bucket: args.oss_bucket,
-      oss_prefix: args.oss_prefix,
+      oss_object_name: args.oss_object_name,
       oss_region: inputs.props.region
     }
   }
@@ -48,6 +48,8 @@ module.exports = async function index(inputs, args = {}) {
     accessKeySecret: inputs.credentials && inputs.credentials.AccessKeySecret,
     securityToken: inputs.credentials && inputs.credentials.SecurityToken,
     readTimeout: 1200000,
+    regionId: args.function_region,
+    accountID: inputs.credentials.AccountID
   };
 
   const fcClient = new FunctionHelper(config);

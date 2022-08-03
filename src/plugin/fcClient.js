@@ -1,20 +1,24 @@
-const { InvokeFunctionRequest } = require('@alicloud/fc-open20210406');
-const Client = require('@alicloud/fc-open20210406').default;
+const FC = require("@alicloud/fc2");
 
 class FunctionHelper {
   constructor(config) {
-    this.client = new Client(config);
+    this.client = new FC( config.accountID, {
+      accessKeyID: config.accessKeyId,
+      accessKeySecret: config.accessKeySecret,
+      securityToken: config.securityToken,
+      region: config.regionId,
+      timeout: 600 * 1000,
+    });
   }
 
   async invoke(service, functionName, payload) {
-    const request = new InvokeFunctionRequest({ body: JSON.stringify(payload) });
     try {
       const response = await this.client.invokeFunction(
         service,
         functionName,
-        request,
+          JSON.stringify(payload)
       );
-      return response.body;
+      return response.data;
     } catch (e) {
       throw new Error(e);
     }

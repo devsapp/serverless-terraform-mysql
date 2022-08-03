@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"serverless-terraform-rds/code/api"
-	"serverless-terraform-rds/code/tool"
+	"serverless-terraform-mysql-creator/code/api"
+	"serverless-terraform-mysql-creator/code/tool"
 )
 
 func Init() {

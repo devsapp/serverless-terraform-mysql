@@ -34,9 +34,9 @@ vars: # 全局变量
 services:
   mysqlCreator: # 业务名称/模块名称
     component: fc
-    actions:
-      pre-deploy:
-        - component: fc build --use-docker --dockerfile ./serverless-terraform-rds/Dockerfile
+#    actions:
+#      pre-deploy:
+#        - component: fc build --use-docker --dockerfile ./serverless-terraform-rds/Dockerfile
     props:
       region:  ${vars.region}
       service: ${vars.service}
@@ -45,8 +45,7 @@ services:
         description: "create mysql resource"
         runtime: custom-container
         customContainerConfig:
-          image:  "{{ acrRegistry }}"
-#          image:  registry.cn-huhehaote.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator:0.0.1
+          image:  registry.${vars.region}.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator:0.0.2
         memorySize: 1024
         timeout: 1800
   mysqlConsumer:
@@ -60,7 +59,7 @@ services:
             function_name: ${vars.service.name}_creator
             # oss 配置
             oss_bucket: "{{ ossBucket }}"
-            oss_prefix: "{{ ossPrefix }}"
+            oss_object_name: "{{ ossObjectName }}"
             # 资源限定参数，不同的资源所需不同
             databaseName: "{{ databaseName }}"
             databaseCharacterSet: "{{ databaseCharacterSet }}"

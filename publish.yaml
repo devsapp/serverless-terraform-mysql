@@ -114,12 +114,12 @@ Parameters:
       description: rds 实例规格，参考https://help.aliyun.com/document_detail/276975.html?spm=5176.rdsbuy.0.tip.detail.40a5752fwc2ZQu
     accountName:
       title: RDS 用户名
-      type: string
+      type: secret
       default: user
       description: RDS 账户
     password:
       title: RDS 密码
-      type: string
+      type: secret
       default: "123456"
       description: RDS 密码
 

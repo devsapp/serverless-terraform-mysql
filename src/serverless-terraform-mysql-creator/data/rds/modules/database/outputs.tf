@@ -13,11 +13,11 @@ output "this_database_name" {
 }
 
 output "this_database_account" {
-  value = concat(alicloud_db_account.this.*.name, [""])[0]
+  value = concat(alicloud_rds_account.this.*.name, [""])[0]
 }
 
 output "this_database_account_type" {
-  value = concat(alicloud_db_account.this.*.type, [""])[0]
+  value = concat(alicloud_rds_account.this.*.type, [""])[0]
 }
 output "this_database_account_privilege" {
   value = concat(alicloud_db_account_privilege.this.*.privilege, [""])[0]

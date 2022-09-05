@@ -45,7 +45,7 @@ services:
         description: "create mysql resource"
         runtime: custom-container
         customContainerConfig:
-          image:  registry.${vars.region}.aliyuncs.com/fc-demo2/serverless-terraform-mysql-creator:0.0.2
+          image:  registry.${vars.region}.aliyuncs.com/serverless_devs/serverless-terraform-mysql-creator:0.0.2
         memorySize: 1024
         timeout: 1800
   mysqlConsumer:

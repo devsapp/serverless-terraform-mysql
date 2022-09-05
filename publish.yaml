@@ -2,7 +2,7 @@ Type: Application
 Name: serverless-terraform-mysql-usage
 Provider:
   - 阿里云
-Version: 0.0.34
+Version: 0.0.35
 Description: 一键创建MySQL资源并简单使用
 HomePage: https://github.com/devsapp/serverless-terraform-mysql
 Tags:
@@ -48,8 +48,6 @@ Parameters:
         - cn-zhangjiakou
         - cn-shenzhen
         - cn-chengdu
-        - cn-wulanchabu
-        - cn-heyuan
     serviceName:
       title: 服务名
       type: string
